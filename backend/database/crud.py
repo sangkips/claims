@@ -2,7 +2,8 @@ from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from database.models import Claim
+from models.claims import Claim
+
 
 def create_claim(db: Session, claim_data):
     new_claim = Claim(**claim_data.dict())
@@ -27,7 +28,7 @@ def update_claim_status(db: Session, claim_id: UUID, claim_data):
 
     if claim_data.description is not None:
         claim.description = claim_data.description
-        
+
     if claim_data.claim_status is not None:
         claim.claim_status = claim_data.claim_status
 
