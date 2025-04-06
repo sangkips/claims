@@ -3,6 +3,7 @@ from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from PIL import Image
 from sqlalchemy.orm import Session
 
+from models.claims import OCRResult
 from database.session import get_db
 from services.ocr_service import ocr_from_image, ocr_from_pdf, upload_and_process_document
 
@@ -47,3 +48,12 @@ async def upload_document(
 ):
     result = await upload_and_process_document(claim_id, file, db)
     return result
+
+
+@router.get("/ocrs")
+def get_all_ocr_results(db: Session = Depends(get_db)):
+    """
+    Get all OCR results.
+    """
+    ocr_results = db.query(OCRResult).all()
+    return ocr_results
