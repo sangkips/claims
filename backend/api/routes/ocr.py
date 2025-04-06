@@ -1,8 +1,10 @@
 from io import BytesIO
-from fastapi import APIRouter, File, UploadFile, HTTPException
+from fastapi import APIRouter, File, UploadFile, HTTPException, Depends
 from PIL import Image
+from sqlalchemy.orm import Session
 
-from services.ocr_service import ocr_from_image, ocr_from_pdf
+from database.session import get_db
+from services.ocr_service import ocr_from_image, ocr_from_pdf, upload_and_process_document
 
 
 router = APIRouter()
@@ -36,3 +38,12 @@ async def process_pdf(file: UploadFile = File(...)):
         return {"extracted_text": extracted_text}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    
+@router.post("/upload-doc/")
+async def upload_document(
+    claim_id: str,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    result = await upload_and_process_document(claim_id, file, db)
+    return result

@@ -34,6 +34,9 @@ class OCRResult(Base):
     claim_id = Column(UUID(as_uuid=True), ForeignKey("claims.id"), nullable=False)
     extracted_text = Column(String, nullable=False)
     document_path = Column(String, nullable=True)
+    processed = Column(Boolean, default=False)
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
+
 
     claim = relationship("Claim", back_populates="ocr_results")
 
