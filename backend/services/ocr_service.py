@@ -6,6 +6,7 @@ import requests
 import tempfile
 from sqlalchemy.orm import Session
 
+from services.nlp_service import classify_document
 from models.claims import OCRResult
 
 PINATA_API_KEY = os.getenv("PINATA_API_KEY")
@@ -81,11 +82,14 @@ async def upload_and_process_document(claim_id: str, file, db: Session):
     # Extract text
     extracted_text = extract_text_from_file(tmp_path)
 
+    classification = classify_document(extracted_text)
+
     # Save to DB
     result = OCRResult(
         claim_id=claim_id,
         document_path=document_url,
-        extracted_text=extracted_text
+        extracted_text=extracted_text,
+        classification=classification
     )
     db.add(result)
     db.commit()

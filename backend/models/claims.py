@@ -35,6 +35,7 @@ class OCRResult(Base):
     extracted_text = Column(String, nullable=False)
     document_path = Column(String, nullable=True)
     processed = Column(Boolean, default=False)
+    classification = Column(String, nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
 
